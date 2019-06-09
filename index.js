@@ -2,15 +2,20 @@ const express = require('express');
 const app = express();
 const port = 8080;
 
-app.get('/', (_req, res) => {
+app.get('/', (req, res) => {
+    const limit = Number(req.query.limit)
+    // TODO: Validate `limit`. (bounds?)
+    if (Number.isNaN(limit) || !Number.isInteger(limit)) {
+        return res.status(400).send('Bad Request');
+    }
+
     // TODO: Compute actual result from limit query.
     const result = {
-        limit: 10,
+        limit,
         medianPrimes: [3, 5]
     };
 
-    res.setHeader('Content-Type', 'application/json');
-    res.send(JSON.stringify(result));
+    res.status(200).json(result);
 });
 
 app.listen(port, () => {
