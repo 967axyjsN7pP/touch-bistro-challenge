@@ -2,6 +2,20 @@ const express = require('express');
 const app = express();
 const port = 8080;
 
+// Note: Assumes an ordered Array.
+const getMedians = orderedNums => {
+    if (!Array.isArray(orderedNums)) {
+        throw new Error('Invalid Argument: `orderedNums must be an Array.');
+    }
+
+    const length = orderedNums.length;
+    const startIndex = Math.floor((length - 1) / 2);
+    const isLengthOdd = length & 1;
+    const endIndex = startIndex + (isLengthOdd ? 1 : 2);
+
+    return orderedNums.slice(startIndex, endIndex);
+};
+
 // See:
 // https://en.wikipedia.org/wiki/Sieve_of_Eratosthenes
 // https://stackoverflow.com/a/15471749
@@ -39,11 +53,11 @@ app.get('/', (req, res) => {
         return res.status(400).send('Bad Request');
     }
 
-    // TODO: Compute actual result from limit query.
+    const primes = getPrimes(limit);
     const result = {
         limit,
-        medianPrimes: [3, 5],
-        primes: getPrimes(limit)
+        medianPrimes: getMedians(primes),
+        primes
     };
 
     res.status(200).json(result);
