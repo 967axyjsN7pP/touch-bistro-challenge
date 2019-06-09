@@ -2,6 +2,10 @@ const express = require('express');
 const app = express();
 const port = 8080;
 
+const Constants = {
+    FIRST_PRIME: 2
+}
+
 // Note: Assumes an ordered Array.
 const getMedians = orderedNums => {
     if (!Array.isArray(orderedNums)) {
@@ -20,10 +24,8 @@ const getMedians = orderedNums => {
 // https://en.wikipedia.org/wiki/Sieve_of_Eratosthenes
 // https://stackoverflow.com/a/15471749
 const getPrimes = limit => {
-    const FIRST_PRIME = 2;
-
     if (!Number.isInteger(limit)) { throw new Error('Invalid Argument: `limit` must be an Integer'); }
-	if (limit <= FIRST_PRIME) { throw new Error('Invalid Argument: `limit` must be greater than 2.'); }
+	if (limit <= Constants.FIRST_PRIME) { throw new Error('Invalid Argument: `limit` must be greater than 2.'); }
 
     const result = new Array(limit).fill(true);
     const squareRootOfLimit = Math.floor(Math.sqrt(limit));
@@ -31,7 +33,7 @@ const getPrimes = limit => {
     result[0] = false;
     result[1] = false;
 
-    for (let i = FIRST_PRIME; i <= squareRootOfLimit; i += 1) {
+    for (let i = Constants.FIRST_PRIME; i <= squareRootOfLimit; i += 1) {
         if (!result[i]) { continue; }
         for (let j = i * i; j < limit; j += i) {
             result[j] = false;
@@ -47,20 +49,19 @@ const getPrimes = limit => {
 };
 
 app.get('/', (req, res) => {
-    const limit = Number(req.query.limit)
-    // TODO: Validate `limit`. (bounds?)
-    if (Number.isNaN(limit) || !Number.isInteger(limit)) {
-        return res.status(400).send('Bad Request');
+    const limit = Number(req.query.limit);
+    const isLimitValid = !Number.isNaN(limit) && Number.isInteger(limit) && limit > Constants.FIRST_PRIME;
+
+    if (!isLimitValid) {
+        return res
+            .status(400)
+            .json({
+                code: 'invalid-limit',
+                message: `\`limit\` is required and must be an Integer greater than ${Constants.FIRST_PRIME}.`
+            });
     }
 
-    const primes = getPrimes(limit);
-    const result = {
-        limit,
-        medianPrimes: getMedians(primes),
-        primes
-    };
-
-    res.status(200).json(result);
+    res.status(200).json(getMedians(getPrimes(limit)));
 });
 
 app.listen(port, () => {
