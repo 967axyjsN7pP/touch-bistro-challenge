@@ -48,7 +48,7 @@ const getPrimes = limit => {
     }, []);
 };
 
-app.get('/', (req, res) => {
+app.get('/api', (req, res) => {
     const limit = Number(req.query.limit);
     const isLimitValid = !Number.isNaN(limit) && Number.isInteger(limit) && limit > Constants.FIRST_PRIME;
 
