@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>TouchBistro Challenge App</title>
+        <style type="text/css">
+            body,
+            html {
+                color: #888;
+                font-family: Arial, sans-serif;
+                height: 100%;
+                margin: 0;
+                padding: 0;
+            }
+
+            h1 {
+                margin: 24px 0;
+            }
+
+            main {
+                align-items: center;
+                display: flex;
+                height: 100%;
+                justify-content: center;
+                margin: 0 auto;
+                max-width: 500px;
+            }
+
+            button[type="submit"] {
+                background: #ccedef;
+                border: none;
+                color: #2a8e94;
+                cursor: pointer;
+                font-size: 1.2em;
+                padding: 0 20px;
+                transition: all 0.2s;
+            }
+
+            button[type="submit"]:focus,
+            button[type="submit"]:hover {
+                background: #00a3ad;
+                color: white;
+                transition: all 0.2s;
+            }
+
+            button[type="submit"]:active {
+                background: #93c8cc;
+            }
+
+            input[type="number"] {
+                border: none;
+                color: #888;
+                flex: 1 1 100%;
+                font-size: 1.2em;
+                padding: 10px;
+            }
+
+            label {
+                display: block;
+                font-size: 1em;
+                font-weight: bold;
+                margin-bottom: 8px;
+            }
+
+            .container {
+                width: 100%;
+            }
+
+            .input-wrapper {
+                border: 2px solid #ccc;
+                border-radius: 5px;
+                display: flex;
+                flex-direction: row;
+                overflow: hidden;
+                width: 100%;
+            }
+        </style>
+    </head>
+    <body>
+        <main>
+            <section class="container">
+                <h1>TouchBistro Challenge App</h1>
+                <form>
+                    <label for="Limit">Enter a limit to get its median prime(s):</label>
+                    <div class="input-wrapper">
+                        <input
+                            id="Limit"
+                            placeholder="Limit"
+                            type="number"
+                        >
+                        <button type="submit">GET</button>
+                    </div>
+                </form>
+            </section>
+        </main>
+    </body>
+</html>
