@@ -47,6 +47,11 @@
                 background: #93c8cc;
             }
 
+            button[type="submit"]:disabled {
+                background: #d8d8cb;
+                color: #a2a294;
+            }
+
             input[type="number"] {
                 border: none;
                 color: #888;
@@ -66,6 +71,10 @@
                 width: 100%;
             }
 
+            .error {
+                color: #dc5656;
+            }
+
             .input-wrapper {
                 border: 2px solid #ccc;
                 border-radius: 5px;
@@ -74,13 +83,19 @@
                 overflow: hidden;
                 width: 100%;
             }
+
+            .result {
+                color: #777;
+                font-size: 1.3em;
+                line-height: 1.4em;
+            }
         </style>
     </head>
     <body>
         <main>
             <section class="container">
                 <h1>TouchBistro Challenge App</h1>
-                <form>
+                <form id="Form">
                     <label for="Limit">Enter a limit to get its median prime(s):</label>
                     <div class="input-wrapper">
                         <input
@@ -88,10 +103,88 @@
                             placeholder="Limit"
                             type="number"
                         >
-                        <button type="submit">GET</button>
+                        <button id="Submit" type="submit">GET</button>
                     </div>
                 </form>
+                <p class="error" id="Error"></p>
+                <p class="result" id="MedianPrimes"></p>
             </section>
         </main>
+        <script>
+            const $error = document.getElementById('Error');
+            const $form = document.getElementById('Form');
+            const $limit = document.getElementById('Limit');
+            const $medianPrimes = document.getElementById('MedianPrimes');
+            const $submit = document.getElementById('Submit');
+
+            let state = {
+                errorMessage: '',
+                limit: null,
+                isFetching: false,
+                medianPrimes: []
+            };
+
+            const updateState = newState => {
+                state = Object.assign({}, state, newState);
+
+                $error.innerHTML = state.errorMessage;
+                $limit.disabled = state.isFetching;
+                $submit.disabled = state.isFetching;
+
+                if (state.isFetching) {
+                    $medianPrimes.innerHTML = 'Fetching...';
+                }
+                else if (state.medianPrimes.length > 1) {
+                    $medianPrimes.innerHTML = `The median primes of ${state.limit} are ${state.medianPrimes.join(' and ')}.`;
+                }
+                else if (state.medianPrimes.length === 1) {
+                    $medianPrimes.innerHTML = $medianPrimes.innerHTML = `The median prime of ${state.limit} is ${state.medianPrimes[0]}.`;
+                }
+                else {
+                    $medianPrimes.innerHTML = '';
+                }
+            };
+
+            $form.addEventListener('submit', event => {
+                const limit = Number($limit.value);
+
+                event.preventDefault();
+
+                updateState({
+                    errorMessage: '',
+                    isFetching: true,
+                    limit,
+                    medianPrimes: []
+                });
+
+                fetch(`/api?limit=${limit}`, {
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    method: 'get'
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        return response.json()
+                            .then(error => Promise.reject(error));
+                    }
+                    return response.json();
+                })
+                .then(medianPrimes => {
+                    updateState({
+                        errorMessage: '',
+                        isFetching: false,
+                        medianPrimes
+                    });
+                })
+                .catch(error => {
+                    updateState({
+                        errorMessage: error.message,
+                        isFetching: false,
+                        medianPrimes: []
+                    });
+                });
+            });
+        </script>
     </body>
 </html>
