@@ -93,98 +93,120 @@
     </head>
     <body>
         <main>
-            <section class="container">
-                <h1>TouchBistro Challenge App</h1>
-                <form id="Form">
-                    <label for="Limit">Enter a limit to get its median prime(s):</label>
-                    <div class="input-wrapper">
-                        <input
-                            id="Limit"
-                            placeholder="Limit"
-                            type="number"
-                        >
-                        <button id="Submit" type="submit">GET</button>
-                    </div>
-                </form>
-                <p class="error" id="Error"></p>
-                <p class="result" id="MedianPrimes"></p>
-            </section>
+            <section class="container" id="App"></section>
         </main>
+        <script src="https://unpkg.com/react@16/umd/react.development.js" crossorigin></script>
+        <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js" crossorigin></script>
         <script>
-            const $error = document.getElementById('Error');
-            const $form = document.getElementById('Form');
-            const $limit = document.getElementById('Limit');
-            const $medianPrimes = document.getElementById('MedianPrimes');
-            const $submit = document.getElementById('Submit');
+            'use strict';
 
-            let state = {
-                errorMessage: '',
-                limit: null,
-                isFetching: false,
-                medianPrimes: []
-            };
+            const e = React.createElement;
 
-            const updateState = newState => {
-                state = Object.assign({}, state, newState);
-
-                $error.innerHTML = state.errorMessage;
-                $limit.disabled = state.isFetching;
-                $submit.disabled = state.isFetching;
-
-                if (state.isFetching) {
-                    $medianPrimes.innerHTML = 'Fetching...';
-                }
-                else if (state.medianPrimes.length > 1) {
-                    $medianPrimes.innerHTML = `The median primes of ${state.limit} are ${state.medianPrimes.join(' and ')}.`;
-                }
-                else if (state.medianPrimes.length === 1) {
-                    $medianPrimes.innerHTML = $medianPrimes.innerHTML = `The median prime of ${state.limit} is ${state.medianPrimes[0]}.`;
-                }
-                else {
-                    $medianPrimes.innerHTML = '';
-                }
-            };
-
-            $form.addEventListener('submit', event => {
-                const limit = Number($limit.value);
-
-                event.preventDefault();
-
-                updateState({
-                    errorMessage: '',
-                    isFetching: true,
-                    limit,
-                    medianPrimes: []
-                });
-
-                fetch(`/api?limit=${limit}`, {
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    method: 'get'
-                })
-                .then(response => {
-                    if (!response.ok) {
-                        return response.json()
-                            .then(error => Promise.reject(error));
-                    }
-                    return response.json();
-                })
-                .then(medianPrimes => {
-                    updateState({
+            class App extends React.Component {
+                constructor(props) {
+                    super(props);
+                    this.state = {
                         errorMessage: '',
                         isFetching: false,
-                        medianPrimes
-                    });
-                })
-                .catch(error => {
-                    updateState({
-                        errorMessage: error.message,
-                        isFetching: false,
+                        limit: '',
+                        medianPrimes: []
+                    };
+                }
+
+                handleLimitChange(event) {
+                    this.setState({ limit: event.target.value });
+                }
+
+                handleSubmit(event) {
+                    event.preventDefault();
+
+                    this.setState({
+                        errorMessage: '',
+                        isFetching: true,
+                        limit: this.state.limit,
                         medianPrimes: []
                     });
-                });
-            });
+
+                    fetch(`/api?limit=${this.state.limit}`, {
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        method: 'get'
+                    })
+                    .then(response => {
+                        if (!response.ok) {
+                            return response.json()
+                                .then(error => Promise.reject(error));
+                        }
+                        return response.json();
+                    })
+                    .then(medianPrimes => {
+                        this.setState({
+                            isFetching: false,
+                            medianPrimes
+                        });
+                    })
+                    .catch(error => {
+                        this.setState({
+                            isFetching: false,
+                            errorMessage: error.message
+                        });
+                    });
+                }
+
+                renderResult() {
+                    if (this.state.errorMessage) {
+                        return e('p', { className: 'error' }, this.state.errorMessage);
+                    }
+
+                    let message = null;
+
+                    if (this.state.isFetching) {
+                        message = 'Fetching...';
+                    }
+                    else if (this.state.medianPrimes.length > 1) {
+                        message = `The median primes of ${this.state.limit} are ${this.state.medianPrimes.join(' and ')}.`;
+                    }
+                    else if (this.state.medianPrimes.length === 1) {
+                        message = `The median prime of ${this.state.limit} is ${this.state.medianPrimes[0]}.`;
+                    }
+
+                    return message ? e('p', { className: 'result' }, message) : null;
+                }
+
+                render() {
+                    return e(
+                        'div',
+                        {},
+                        e('h1', {}, 'TouchBistro Challenge AppFoo Bar Baz'),
+                        e(
+                            'form',
+                            {
+                                onSubmit: event => this.handleSubmit(event)
+                            },
+                            e('label', { htmlFor: 'Limit' }, 'Enter a limit to get its median prime(s):'),
+                            e(
+                                'div',
+                                { className: 'input-wrapper'},
+                                e(
+                                    'input',
+                                    {
+                                        id: 'Limit',
+                                        onChange: event => this.handleLimitChange(event),
+                                        placeholder: 'Limit',
+                                        type: 'number',
+                                        value: this.state.limit
+                                    }
+                                ),
+                                e('button', { type: 'Submit' }, 'GET')
+                            )
+                        ),
+                        this.renderResult()
+                    );
+                }
+            }
+
+            ReactDOM.render(e(App), document.getElementById('App'));
         </script>
     </body>
 </html>
