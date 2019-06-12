@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build-frontend": "babel ./frontend/src -d ./public/js"
+    "build-frontend": "babel ./frontend/src -d ./public/js",
+    "start": "node backend/server.js"
   },
   "author": "",
   "license": "ISC",
