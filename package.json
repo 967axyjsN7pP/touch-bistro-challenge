@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build-frontend": "babel ./frontend/src -d ./public/js"
   },
   "author": "",
   "license": "ISC",
