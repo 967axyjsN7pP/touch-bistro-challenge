@@ -4,19 +4,28 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build-frontend": "babel ./frontend/src -d ./public/js",
+    "build-frontend": "webpack --mode development",
     "start": "node backend/server.js",
     "test-backend": "jest ./backend/logic.test.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@babel/polyfill": "7.4.4",
     "express": "4.17.1"
   },
   "devDependencies": {
     "@babel/cli": "7.4.4",
     "@babel/core": "7.4.5",
+    "@babel/preset-env": "7.4.5",
     "@babel/preset-react": "7.0.0",
-    "jest": "24.8.0"
+    "babel-jest": "24.8.0",
+    "babel-loader": "8.0.6",
+    "jest": "24.8.0",
+    "react": "16.8.6",
+    "react-dom": "16.8.6",
+    "react-test-renderer": "16.8.6",
+    "webpack": "4.34.0",
+    "webpack-cli": "3.3.4"
   }
 }
