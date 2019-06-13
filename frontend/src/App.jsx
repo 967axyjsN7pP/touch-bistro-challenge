@@ -9,7 +9,9 @@ class App extends Component {
             errorMessage: '',
             isFetching: false,
             limit: '',
-            medianPrimes: []
+            limitQuery: '',
+            medianPrimes: [],
+            resultLimit: ''
         };
 
         this.handleLimitChange = this.handleLimitChange.bind(this);
@@ -17,7 +19,7 @@ class App extends Component {
     }
 
     handleLimitChange(event) {
-        this.setState({ limit: event.target.value });
+        this.setState({ limitQuery: event.target.value });
     }
 
     handleSubmit(event) {
@@ -26,10 +28,11 @@ class App extends Component {
         this.setState({
             errorMessage: '',
             isFetching: true,
+            limit: '',
             medianPrimes: []
         });
 
-        fetch(`/api?limit=${this.state.limit}`, {
+        fetch(`/api?limit=${this.state.limitQuery}`, {
             headers: {
                 'Content-Type': 'application/json'
             },
@@ -45,6 +48,7 @@ class App extends Component {
         .then(medianPrimes => {
             this.setState({
                 isFetching: false,
+                limit: this.state.limitQuery,
                 medianPrimes
             });
         })
@@ -68,7 +72,7 @@ class App extends Component {
                             onChange={this.handleLimitChange}
                             placeholder="Limit"
                             type="number"
-                            value={this.state.limit}
+                            value={this.state.limitQuery}
                         />
                         <button type="submit">GET</button>
                     </div>
