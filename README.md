@@ -22,4 +22,5 @@ The limit query param is required.
 
 ```bash
 npm run test-backend
+npm run test-frontend
 ```
