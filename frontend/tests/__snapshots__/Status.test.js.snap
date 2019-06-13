@@ -1,0 +1,33 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`it renders the error message when errorMessage prop is non-empty 1`] = `
+<p
+  className="error"
+>
+  Something went wrong.
+</p>
+`;
+
+exports[`it renders the fetching message when isFetching prop is true 1`] = `
+<p
+  className="result"
+>
+  Fetching...
+</p>
+`;
+
+exports[`it renders the plural-form of the success message when medianPrimes prop has two elements 1`] = `
+<p
+  className="result"
+>
+  The median primes of 10 are 3 and 5
+</p>
+`;
+
+exports[`it renders the singular-form of the success message when medianPrimes prop has a single element 1`] = `
+<p
+  className="result"
+>
+  The median prime of 18 is 7
+</p>
+`;

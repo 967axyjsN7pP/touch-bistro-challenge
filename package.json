@@ -6,7 +6,9 @@
   "scripts": {
     "build-frontend": "webpack --mode development",
     "start": "node backend/server.js",
-    "test-backend": "jest ./backend/logic.test.js"
+    "test-backend": "jest ./backend/logic.test.js",
+    "test-frontend": "jest ./frontend/tests",
+    "update-snapshots": "jest --updateSnapshot"
   },
   "author": "",
   "license": "ISC",
